@@ -1,164 +1,150 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const grafico = document.getElementById('grafico');
-    const eixoY = document.getElementById('eixo-y');
-    const eixoX = document.getElementById('eixo-x');
-    const nomeInput = document.getElementById('nome-dado');
-    const valorInput = document.getElementById('valor-dado');
-    const adicionarBtn = document.getElementById('adicionar-btn');
-    const limparBtn = document.getElementById('limpar-btn');
-    const aleatorioBtn = document.getElementById('aleatorio-btn');
-    
-    let dados = [];
-    let valorMaximo = 10;
-    
-    // Inicializa o gráfico
-    function iniciarGrafico() {
-        atualizarEixoY();
-        renderizarGrafico();
+class GraficoInterativo {
+    constructor() {
+        this.grafico = document.getElementById('grafico');
+        this.eixoY = document.getElementById('eixo-y');
+        this.eixoX = document.getElementById('eixo-x');
+        this.mensagemVazio = document.getElementById('mensagem-vazio');
+        this.nomeInput = document.getElementById('nome-dado');
+        this.valorInput = document.getElementById('valor-dado');
+        
+        this.dados = [];
+        this.valorMaximo = 10;
+        
+        this.iniciar();
     }
     
-    // Adiciona novo dado
-    function adicionarDado() {
-        const nome = nomeInput.value.trim();
-        const valor = parseFloat(valorInput.value);
+    iniciar() {
+        this.configurarEventos();
+        this.atualizarVisualizacao();
+    }
+    
+    configurarEventos() {
+        document.getElementById('adicionar-btn').addEventListener('click', () => this.adicionarDado());
+        this.valorInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.adicionarDado();
+        });
         
-        if (!nome || isNaN(valor) || valor <= 0) {
-            alert('Por favor, preencha um nome e um valor válido!');
+        document.getElementById('limpar-btn').addEventListener('click', () => this.limparDados());
+    }
+    
+    adicionarDado() {
+        const nome = this.nomeInput.value.trim();
+        const valor = parseFloat(this.valorInput.value);
+        
+        if (!this.validarEntrada(nome, valor)) {
+            this.mostrarErro('Por favor, preencha um nome e um valor válido (maior que zero)');
             return;
         }
         
-        dados.push({
+        this.dados.push({
+            id: Date.now(),
             nome,
-            valor,
-            id: Date.now()
+            valor
         });
         
-        // Atualiza valor máximo
-        valorMaximo = Math.max(valorMaximo, valor);
-        
-        // Limpa inputs
-        nomeInput.value = '';
-        valorInput.value = '';
-        nomeInput.focus();
-        
-        // Atualiza gráfico
-        atualizarEixoY();
-        renderizarGrafico();
+        this.atualizarValorMaximo(valor);
+        this.limparCampos();
+        this.atualizarVisualizacao();
     }
     
-    // Gera dados aleatórios
-    function gerarDadosAleatorios() {
-        const nomes = ['Maçãs', 'Laranjas', 'Bananas', 'Uvas', 'Pêras', 'Morangos', 'Abacaxis'];
-        const qtd = Math.floor(Math.random() * 5) + 3; // 3-7 itens
-        
-        dados = [];
-        valorMaximo = 10;
-        
-        for (let i = 0; i < qtd; i++) {
-            const nome = nomes[Math.floor(Math.random() * nomes.length)];
-            const valor = Math.floor(Math.random() * 90) + 10; // 10-100
-            
-            dados.push({
-                nome,
-                valor,
-                id: Date.now() + i
-            });
-            
-            valorMaximo = Math.max(valorMaximo, valor);
-        }
-        
-        atualizarEixoY();
-        renderizarGrafico();
+    validarEntrada(nome, valor) {
+        return nome && !isNaN(valor) && valor > 0;
     }
     
-    // Limpa o gráfico
-    function limparGrafico() {
-        if (dados.length === 0) return;
+    mostrarErro(mensagem) {
+        alert(mensagem);
+        this.valorInput.focus();
+    }
+    
+    atualizarValorMaximo(valor) {
+        this.valorMaximo = Math.max(this.valorMaximo, valor);
+    }
+    
+    limparCampos() {
+        this.nomeInput.value = '';
+        this.valorInput.value = '';
+        this.nomeInput.focus();
+    }
+    
+    limparDados() {
+        if (this.dados.length === 0) return;
         
-        if (confirm('Tem certeza que deseja limpar todos os dados?')) {
-            dados = [];
-            valorMaximo = 10;
-            atualizarEixoY();
-            renderizarGrafico();
+        if (confirm('Tem certeza que deseja remover todos os dados?')) {
+            this.dados = [];
+            this.valorMaximo = 10;
+            this.atualizarVisualizacao();
         }
     }
     
-    // Atualiza eixo Y com valores
-    function atualizarEixoY() {
-        eixoY.innerHTML = '';
-        
-        // Cria 5 marcadores no eixo Y
+    atualizarVisualizacao() {
+        this.atualizarEixoY();
+        this.renderizarGrafico();
+        this.atualizarMensagemVazio();
+    }
+    
+    atualizarEixoY() {
+        this.eixoY.innerHTML = '';
         const qtdMarcadores = 5;
+        
         for (let i = 0; i <= qtdMarcadores; i++) {
-            const valor = Math.round((valorMaximo * i) / qtdMarcadores);
+            const valor = Math.round((this.valorMaximo * i) / qtdMarcadores);
             const marcador = document.createElement('div');
-            marcador.textContent = valor;
-            marcador.style.position = 'absolute';
+            marcador.textContent = valor.toLocaleString();
             marcador.style.bottom = `${(i / qtdMarcadores) * 100}%`;
-            marcador.style.transform = 'translateY(50%)';
-            eixoY.appendChild(marcador);
+            this.eixoY.appendChild(marcador);
         }
     }
     
-    // Renderiza as barras do gráfico
-    function renderizarGrafico() {
-        grafico.innerHTML = '';
-        eixoX.innerHTML = '';
+    renderizarGrafico() {
+        this.grafico.innerHTML = '';
+        this.eixoX.innerHTML = '';
         
-        if (dados.length === 0) {
-            grafico.innerHTML = '<p class="sem-dados">Adicione dados para ver o gráfico</p>';
-            return;
-        }
-        
-        dados.forEach(dado => {
-            // Container da barra
-            const container = document.createElement('div');
-            container.className = 'barra-container';
-            
-            // Cria a barra
-            const barra = document.createElement('div');
-            barra.className = 'barra';
-            barra.style.height = `${(dado.valor / valorMaximo) * 100}%`;
-            barra.dataset.id = dado.id;
-            
-            // Valor no topo da barra
-            const valor = document.createElement('div');
-            valor.className = 'barra-valor';
-            valor.textContent = dado.valor;
-            
-            // Rótulo no eixo X
-            const rotulo = document.createElement('div');
-            rotulo.className = 'barra-rotulo';
-            rotulo.textContent = dado.nome;
-            
-            // Eventos da barra
-            barra.addEventListener('click', function() {
-                document.querySelectorAll('.barra').forEach(b => b.classList.remove('ativa'));
-                this.classList.add('ativa');
-            });
-            
-            // Monta a estrutura
-            barra.appendChild(valor);
-            container.appendChild(barra);
-            container.appendChild(rotulo);
-            grafico.appendChild(container);
-            
-            // Adiciona rótulo no eixo X
-            const rotuloEixoX = document.createElement('div');
-            rotuloEixoX.textContent = dado.nome;
-            eixoX.appendChild(rotuloEixoX);
+        this.dados.forEach(dado => {
+            this.criarBarra(dado);
+            this.criarRotuloEixoX(dado.nome);
         });
     }
     
-    // Event Listeners
-    adicionarBtn.addEventListener('click', adicionarDado);
-    valorInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') adicionarDado();
-    });
+    criarBarra(dado) {
+        const container = document.createElement('div');
+        container.className = 'barra-container';
+        
+        const barra = document.createElement('div');
+        barra.className = 'barra';
+        barra.style.height = `${(dado.valor / this.valorMaximo) * 100}%`;
+        barra.dataset.id = dado.id;
+        
+        const valor = document.createElement('div');
+        valor.className = 'barra-valor';
+        valor.textContent = dado.valor.toLocaleString();
+        
+        const rotulo = document.createElement('div');
+        rotulo.className = 'barra-rotulo';
+        rotulo.textContent = dado.nome;
+        
+        barra.addEventListener('click', () => {
+            document.querySelectorAll('.barra').forEach(b => b.classList.remove('ativa'));
+            barra.classList.add('ativa');
+        });
+        
+        barra.appendChild(valor);
+        container.appendChild(barra);
+        container.appendChild(rotulo);
+        this.grafico.appendChild(container);
+    }
     
-    limparBtn.addEventListener('click', limparGrafico);
-    aleatorioBtn.addEventListener('click', gerarDadosAleatorios);
+    criarRotuloEixoX(nome) {
+        const rotulo = document.createElement('div');
+        rotulo.textContent = nome;
+        this.eixoX.appendChild(rotulo);
+    }
     
-    // Inicia o gráfico
-    iniciarGrafico();
+    atualizarMensagemVazio() {
+        this.mensagemVazio.style.display = this.dados.length === 0 ? 'block' : 'none';
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    new GraficoInterativo();
 });

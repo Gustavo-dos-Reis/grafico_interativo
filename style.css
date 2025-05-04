@@ -1,0 +1,201 @@
+/* Estilos Gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+/* Container do Gráfico */
+.grafico-container {
+    position: relative;
+    margin: 40px 0;
+    padding-left: 50px;
+    padding-bottom: 50px;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    min-height: 400px;
+}
+
+/* Eixos */
+.eixo-y {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+}
+
+.eixo-x {
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: -30px;
+    height: 30px;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Gráfico */
+.grafico {
+    display: flex;
+    height: 400px;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.barra-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+}
+
+.barra {
+    width: 100%;
+    background-color: #3498db;
+    transition: height 0.5s ease, background-color 0.3s;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.barra:hover {
+    background-color: #2980b9;
+    opacity: 0.9;
+}
+
+.barra.ativa {
+    background-color: #e74c3c;
+}
+
+.barra-valor {
+    position: absolute;
+    top: -25px;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.barra-rotulo {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+/* Controles */
+.controles {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.form-adicionar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.form-adicionar input {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.form-adicionar input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.acoes {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#limpar-btn {
+    background-color: #e74c3c;
+}
+
+#limpar-btn:hover {
+    background-color: #c0392b;
+}
+
+#aleatorio-btn {
+    background-color: #2ecc71;
+}
+
+#aleatorio-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .grafico {
+        gap: 10px;
+        padding: 0 10px;
+    }
+    
+    .barra-rotulo {
+        font-size: 12px;
+    }
+    
+    .form-adicionar {
+        flex-direction: column;
+    }
+    
+    .form-adicionar input, button {
+        width: 100%;
+    }
+}

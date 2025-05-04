@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico Interativo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gráfico de Barras Interativo</h1>
+        
+        <div class="grafico-container">
+            <div class="grafico" id="grafico">
+                <!-- Barras serão geradas pelo JavaScript -->
+            </div>
+            <div class="eixo-y" id="eixo-y"></div>
+            <div class="eixo-x" id="eixo-x"></div>
+        </div>
+        
+        <div class="controles">
+            <div class="form-adicionar">
+                <input type="text" id="nome-dado" placeholder="Nome do item" required>
+                <input type="number" id="valor-dado" placeholder="Valor" min="0" required>
+                <button id="adicionar-btn">Adicionar</button>
+            </div>
+            
+            <div class="acoes">
+                <button id="limpar-btn">Limpar Gráfico</button>
+                <button id="aleatorio-btn">Dados Aleatórios</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
